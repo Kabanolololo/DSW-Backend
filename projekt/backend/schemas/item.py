@@ -14,11 +14,11 @@ class GroceryItemCreate(BaseModel):
     quantity: int = Field(..., ge=1, example=2)
     unit: Optional[UnitEnum] = Field(None, example="liters")
     category: Optional[str] = Field(None, max_length=50, example="Dairy")
-    notes: Optional[str] = Field(None, max_length=255, example="Lactose-free") 
+    notes: Optional[str] = Field(None, max_length=255, example="Lactose-free")
+    #user_id: int = Field(..., example=1)
 
     class Config:
         anystr_strip_whitespace = True
-
 
 # Schemat dla elementu, który jest zwracany po utworzeniu
 class GroceryItem(GroceryItemCreate):

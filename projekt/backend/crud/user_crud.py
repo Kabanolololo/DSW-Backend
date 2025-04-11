@@ -1,8 +1,17 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from models.user import User
 from schemas.user import UserCreate
 from authorization.hash import hash_password, verify_password
-from fastapi import HTTPException, status
+from authorization.jwt import create_access_token, verify_token
+
+# Funkcja do weryfikacji tokenu i pobierania użytkownika
+def get_current_user(db: Session, token: str):
+    try:
+        user = verify_token(token, db)
+        return user
+    except HTTPException as e:
+        raise e
 
 # Funkcja sluzaca do rejestracji użytkownika
 def create_user(db: Session, user: UserCreate):
@@ -38,5 +47,5 @@ def authenticate_user(db: Session, username: str, password: str):
             detail="Nieprawidłowa nazwa użytkownika lub hasło"
         )
     
-    return user
-
+    access_token = create_access_token(data={"sub": user.username})
+    return access_token

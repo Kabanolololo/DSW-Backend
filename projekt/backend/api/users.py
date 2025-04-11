@@ -20,5 +20,5 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
 # Endpoint logowania
 @router.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
-    authenticated_user = authenticate_user(db, user.username, user.password)
-    return {"message": "Zalogowano pomyślnie"}
+    access_token = authenticate_user(db, user.username, user.password)
+    return {"access_token": access_token, "token_type": "bearer"}
