@@ -9,19 +9,8 @@ router = APIRouter()
 
 # Endpoint do pobierania wszystkich elementów z filtrowaniem i sortowaniem
 @router.get("/", response_model=List[GroceryItem])
-def list_items(
-    db: Session = Depends(get_db),
-    query_params: ItemQueryParams = Depends(),  # Przyjmujemy parametry zapytania jako obiekt
-):
-    # Wywołujemy funkcję CRUD do pobierania elementów z bazy danych
-    items = get_items(
-        db,
-        name=query_params.name,
-        category=query_params.category,
-        purchased=query_params.purchased,
-        sort_by=query_params.sort_by,
-        sort_order=query_params.sort_order
-    )
+def list_items(db: Session = Depends(get_db),query_params: ItemQueryParams = Depends(),):
+    items = get_items(db,name=query_params.name,category=query_params.category,purchased=query_params.purchased,sort_by=query_params.sort_by,sort_order=query_params.sort_order)
     return items
 
 # Endpoint do tworzenia nowego elementu

@@ -4,45 +4,30 @@ from schemas.item import GroceryItemCreate
 from fastapi import HTTPException, status
 
 # Funkcja do pobierania elementów z bazy danych z filtrami i sortowaniem
-def get_items(
-    db: Session, 
-    name: str = None, 
-    category: str = None, 
-    purchased: bool = None, 
-    sort_by: str = None,  # Parametr dla sortowania
-    sort_order: str = "asc"  # Parametr dla kierunku sortowania (rosnąco/malejąco)
-):
+def get_items(db: Session, name: str = None, category: str = None, purchased: bool = None, sort_by: str = None, sort_order: str = "asc"):
     try:
-        query = db.query(GroceryItem)  # Tworzymy zapytanie na tabeli grocery_items
-
-        # Filtrujemy po nazwie, jeśli podano
+        query = db.query(GroceryItem) 
         if name:
             query = query.filter(GroceryItem.name.ilike(f"%{name}%"))
-
-        # Filtrujemy po kategorii, jeśli podano
         if category:
             query = query.filter(GroceryItem.category.ilike(f"%{category}%"))
-
-        # Filtrujemy po purchased, jeśli podano
         if purchased is not None:
             query = query.filter(GroceryItem.purchased == purchased)
-
-        # Dodanie sortowania
+            
         if sort_by == "createdAt":
             if sort_order == "asc":
-                query = query.order_by(GroceryItem.createdAt.asc())  # Sortowanie rosnąco po createdAt
+                query = query.order_by(GroceryItem.createdAt.asc())
             else:
-                query = query.order_by(GroceryItem.createdAt.desc())  # Sortowanie malejąco po createdAt
-
+                query = query.order_by(GroceryItem.createdAt.desc())
         elif sort_by == "updatedAt":
             if sort_order == "asc":
-                query = query.order_by(GroceryItem.updatedAt.asc())  # Sortowanie rosnąco po updatedAt
+                query = query.order_by(GroceryItem.updatedAt.asc())
             else:
-                query = query.order_by(GroceryItem.updatedAt.desc())  # Sortowanie malejąco po updatedAt
+                query = query.order_by(GroceryItem.updatedAt.desc())
 
-        items = query.all()  # Zwracamy wszystkie pasujące elementy
+        items = query.all()
 
-        if not items:  # Jeśli wynik jest pusty
+        if not items:
             raise HTTPException(status_code=404, detail="No items found matching the given criteria")
 
         return items
